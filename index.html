@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENZO PITRE - Portfolio 2025</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL STYLES & ANIMATIONS --- */
+        body {
+            background-color: #030303;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor used */
+        }
+
+        /* Fallback cursor for mobile */
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            #custom-cursor { display: none !important; }
+        }
+
+        ::selection {
+            background-color: #06b6d4;
+            color: #000;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4; 
+        }
+
+        /* Aurora Background Animation */
+        @keyframes aurora-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .aurora-bg {
+            background: linear-gradient(-45deg, #000000, #0a192f, #000000, #0f2027);
+            background-size: 400% 400%;
+            animation: aurora-shift 15s ease infinite;
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Overlay Effects */
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="1"/%3E%3C/svg%3E');
+        }
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.25) 50%), linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        /* Utilities */
+        .clip-path-button {
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .glow-line {
+            box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Animation Classes */
+        .reveal-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-left-hidden {
+            opacity: 0;
+            transform: translateX(-100px) scale(0.8);
+            transition: all 1s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+        .reveal-right-hidden {
+            opacity: 0;
+            transform: translateX(100px) scale(0.8);
+            transition: all 1s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+        .reveal-side-visible {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        /* Loader */
+        #loader {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .loader-bar {
+            transition: width 2s ease-in-out;
+        }
+
+        /* Interest Card Hover */
+        .interest-card:hover .interest-line {
+            transform: scaleX(1);
+        }
+        .interest-card:hover .interest-desc {
+            opacity: 1;
+        }
+        .interest-card:hover .interest-content {
+            transform: translateY(0);
+        }
+        
+        /* Experience Card Hover */
+        .xp-card:hover .xp-gradient {
+            transform: translateX(100%);
+        }
+        .xp-card:hover .corner {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- --- INITIAL LOADER --- -->
+    <div id="loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black">
+        <div class="w-64 h-1 bg-gray-800 rounded overflow-hidden mb-4">
+            <div id="loader-progress" class="h-full bg-cyan-500 w-0"></div>
+        </div>
+        <div class="font-mono text-cyan-500 text-sm" id="loader-text">INITIALISATION SYSTEME...</div>
+    </div>
+
+    <!-- --- CUSTOM CURSOR --- -->
+    <div id="custom-cursor" class="fixed top-0 left-0 w-8 h-8 border-2 border-cyan-400 rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:flex justify-center items-center transition-transform duration-75 ease-out">
+        <div class="w-1 h-1 bg-white rounded-full"></div>
+    </div>
+
+    <!-- --- BACKGROUNDS --- -->
+    <div class="aurora-bg"></div>
+    <canvas id="space-canvas" class="fixed inset-0 z-[1] pointer-events-none mix-blend-screen"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- --- MAIN CONTENT --- -->
+    <main id="main-content" class="relative z-10 opacity-0 transition-opacity duration-1000">
+
+        <!-- HEADER -->
+        <header class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
+            <div class="font-bold text-xl tracking-tighter flex items-center gap-2 cursor-pointer" onclick="scrollToSection('hero')">
+                <div class="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></div>
+                EP.2025
+            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest">
+                <button onclick="scrollToSection('hero')" class="hover:text-cyan-400 transition-colors relative group text-left">Profil<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></button>
+                <button onclick="scrollToSection('experience')" class="hover:text-cyan-400 transition-colors relative group text-left">Expérience<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></button>
+                <button onclick="scrollToSection('skills')" class="hover:text-cyan-400 transition-colors relative group text-left">Compétences<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></button>
+                <button onclick="scrollToSection('contact')" class="hover:text-cyan-400 transition-colors relative group text-left">Contact<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></button>
+            </nav>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="relative h-screen w-full flex items-center justify-center overflow-hidden z-10">
+            <div id="hero-content" class="container mx-auto px-6 relative z-20 transform transition-transform duration-100 ease-out will-change-transform">
+                <div class="flex flex-col items-start">
+                    
+                    <!-- Label -->
+                    <div class="flex items-center gap-4 mb-4 reveal-hidden" style="transition-delay: 0.5s">
+                        <div class="h-[2px] w-12 bg-cyan-400 glow-line"></div>
+                        <span class="text-cyan-400 tracking-[0.5em] text-sm uppercase font-bold">Portfolio 2025</span>
+                    </div>
+
+                    <!-- Name -->
+                    <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 leading-tight mix-blend-overlay mb-2">
+                        <span class="glitch-target" data-text="ENZO PITRE">ENZO PITRE</span>
+                    </h1>
+                    
+                    <!-- Subrole -->
+                    <h2 class="reveal-hidden text-xl md:text-3xl font-light text-gray-300 mt-6 max-w-3xl" style="transition-delay: 1.0s">
+                        DIGITAL STRATEGIST & CREATIVE <span class="text-cyan-500">_</span><br>
+                        <span class="text-lg opacity-80">Étudiant BUT Tech de Co // Parcours Marketing Digital</span>
+                    </h2>
+
+                    <!-- Bio -->
+                    <p class="reveal-hidden max-w-xl mt-8 text-gray-400 leading-relaxed border-l-2 border-cyan-900 pl-6 backdrop-blur-sm" style="transition-delay: 1.5s">
+                        Je ne suis pas juste un étudiant. Je suis une force créative en mouvement. Passionné par le marketing digital, le design et l'entrepreneuriat, je transforme les idées en impact visuel et stratégique. Discipliné par 5 ans de Sapeur-Pompier, créatif par nature.
+                    </p>
+
+                    <!-- Buttons -->
+                    <div class="reveal-hidden mt-12 flex flex-wrap gap-6" style="transition-delay: 1.8s">
+                        <button onclick="scrollToSection('experience')" class="magnetic-btn px-8 py-4 bg-cyan-500 text-black font-bold uppercase tracking-widest hover:bg-cyan-400 transition-colors clip-path-button block">
+                            Explorer Le Système
+                        </button>
+                        
+                        <!-- LIEN VERS CV LOCAL : CV Enzo.pdf -->
+                        <a href="CV Enzo.pdf" download="CV_Enzo_Pitre.pdf" class="magnetic-btn px-8 py-4 border border-white/20 text-white font-bold uppercase tracking-widest hover:bg-white/10 transition-colors clip-path-button flex items-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            Télécharger CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div onclick="scrollToSection('experience')" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-cyan-500 cursor-pointer z-30 animate-bounce">
+                <i data-lucide="chevron-down" class="w-8 h-8"></i>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section id="experience" class="py-32 relative z-10 overflow-hidden">
+            <div class="container mx-auto px-6">
+                <!-- Header -->
+                <div class="text-center mb-24 reveal-hidden">
+                    <h2 class="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter">
+                        Historique <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">Opérationnel</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-transparent mx-auto mt-4"></div>
+                </div>
+
+                <div class="relative" id="timeline-container">
+                    <!-- Central Line -->
+                    <div class="hidden md:block absolute left-1/2 -translate-x-1/2 h-full w-px bg-gradient-to-b from-transparent via-cyan-900 to-transparent"></div>
+                    
+                    <!-- PRINTEKNOLOGIES (Futur) -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row-reverse text-right reveal-right-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Sept 2025 - Août 2026</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Responsable Marketing Digital</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-end">
+                                    PRINTEKNOLOGIES <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Alternance. Pilotage intégral de la stratégie numérique. Développement de l'écosystème digital, acquisition de trafic et optimisation de la conversion.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- CREATIVE ACADEMIE -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row text-left reveal-left-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Jan 2025 - Mar 2025</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Stage Mission Marketing</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-start">
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i> CRÉATIVE ACADÉMIE, MÉRIGNAC
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Développement de la stratégie web marketing et optimisation du référencement naturel (SEO).</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- BONICI -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row-reverse text-right reveal-right-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Sep 2024 - Jan 2025</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Emploi Étudiant</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-end">
+                                    BONICI, MIOS <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Accueil client, confection des pizzas, maintien rigoureux de l'hygiène et des standards de qualité.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- CRETA QUAD SAFARI -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row text-left reveal-left-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Juin 2024 - Juil 2024</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Stage International</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-start">
+                                    <i data-lucide="globe" class="w-4 h-4"></i> CRETA QUAD SAFARI, CRÈTE
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Expérience en milieu international. Accueil et contact client, encadrement de groupes et communication interculturelle.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- LIGUE VOLLEY -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row-reverse text-right reveal-right-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Mai 2024</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Stage Web Marketing & Event</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-end">
+                                    LIGUE NOUVELLE AQUITAINE VOLLEY-BALL <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Foire Internationale de Bordeaux. Animation de stand, contact client direct et gestion de flux.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- COTTAGE -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row text-left reveal-left-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Jan 2024 (3 sem.)</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Stage Découverte</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-start">
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i> COTTAGE, GRADIGNAN
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Création de contenu pour les réseaux sociaux, recherche de partenariats, veille concurrentielle et création de supports print.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                     <!-- BIOCOOP -->
+                     <div class="timeline-item relative flex items-center w-full mb-24 flex-row-reverse text-right reveal-right-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Sept 2023 - Présent</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Logistique & Vente (Intérim)</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-end">
+                                    BIOCOOP LA TESTE <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Employé libre-service polyvalent. Gestion de caisse, mise en rayon, conseil client expert.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- POMPIER -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row text-left reveal-left-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">2017 - 2022</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Jeune Sapeur Pompier</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-start">
+                                    <i data-lucide="shield" class="w-4 h-4"></i> SDIS 33, ANDERNOS
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">Engagement citoyen, discipline, esprit d'équipe et apprentissage des techniques de secours et d'incendie.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                    <!-- EHPAD -->
+                    <div class="timeline-item relative flex items-center w-full mb-24 flex-row-reverse text-right reveal-right-hidden">
+                        <div class="w-full md:w-1/2 px-8 md:px-16">
+                            <div class="xp-card group relative p-8 bg-black/40 backdrop-blur-md border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-lg overflow-hidden">
+                                <div class="xp-gradient absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] transition-transform duration-1000"></div>
+                                <span class="text-xs font-mono text-cyan-400 mb-2 block tracking-widest">Été 2021</span>
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase">Animation Sociale (Bénévolat)</h3>
+                                <h4 class="text-sm md:text-lg text-gray-400 mb-4 flex items-center gap-2 font-mono justify-end">
+                                    EHPAD MARCHEPRIME <i data-lucide="heart" class="w-4 h-4"></i>
+                                </h4>
+                                <p class="text-gray-300 leading-relaxed text-sm">En charge de l'animation auprès des résidents. Écoute active, empathie et création de lien social intergénérationnel.</p>
+                                <div class="corner absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500 opacity-0 transition-opacity"></div>
+                                <div class="corner absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-cyan-500 z-10"><div class="absolute inset-0 rounded-full bg-cyan-500 animate-ping opacity-20"></div></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION BREAK -->
+        <div class="h-32 w-full bg-gradient-to-b from-transparent to-black/80 relative z-20"></div>
+
+        <!-- SKILLS SECTION -->
+        <section id="skills" class="py-32 bg-black/40 relative z-20">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Text Block -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-1 flex flex-col justify-center reveal-hidden">
+                        <h2 class="text-5xl font-black text-white mb-6 leading-tight">
+                            ARSENAL<br/>
+                            <span class="text-cyan-500">TECHNIQUE</span>
+                        </h2>
+                        <p class="text-gray-400 mb-8">
+                            Une combinaison hybride de compétences marketing stratégiques et de capacités créatives techniques.
+                        </p>
+                        <div class="flex flex-wrap gap-2 font-mono">
+                            <span class="px-3 py-1 bg-white/5 rounded text-xs text-cyan-400 border border-cyan-900">Marketing</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-xs text-cyan-400 border border-cyan-900">SEO</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-xs text-cyan-400 border border-cyan-900">Design</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-xs text-cyan-400 border border-cyan-900">Vibe-Coding</span>
+                        </div>
+                    </div>
+
+                    <!-- Skill Cards -->
+                    <!-- SEO -->
+                    <div class="reveal-hidden p-6 bg-white/5 backdrop-blur border border-white/5 rounded-xl overflow-hidden group hover:bg-white/10 transition-colors">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-cyan-500/20 rounded-lg text-cyan-400"><i data-lucide="globe"></i></div>
+                            <span class="font-mono text-2xl font-bold text-white/20">80%</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">SEO & Marketing</h3>
+                        <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)] w-0 transition-all duration-[1500ms]" data-width="80%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Adobe -->
+                    <div class="reveal-hidden p-6 bg-white/5 backdrop-blur border border-white/5 rounded-xl overflow-hidden group hover:bg-white/10 transition-colors" style="transition-delay: 0.1s">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-cyan-500/20 rounded-lg text-cyan-400"><i data-lucide="aperture"></i></div>
+                            <span class="font-mono text-2xl font-bold text-white/20">60%</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Adobe Suite</h3>
+                        <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)] w-0 transition-all duration-[1500ms]" data-width="60%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Video -->
+                    <div class="reveal-hidden p-6 bg-white/5 backdrop-blur border border-white/5 rounded-xl overflow-hidden group hover:bg-white/10 transition-colors" style="transition-delay: 0.2s">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-cyan-500/20 rounded-lg text-cyan-400"><i data-lucide="play"></i></div>
+                            <span class="font-mono text-2xl font-bold text-white/20">70%</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Vidéo (Premiere/Capcut)</h3>
+                        <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)] w-0 transition-all duration-[1500ms]" data-width="70%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="reveal-hidden p-6 bg-white/5 backdrop-blur border border-white/5 rounded-xl overflow-hidden group hover:bg-white/10 transition-colors" style="transition-delay: 0.3s">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-cyan-500/20 rounded-lg text-cyan-400"><i data-lucide="globe"></i></div>
+                            <span class="font-mono text-2xl font-bold text-white/20">85%</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Anglais / Espagnol</h3>
+                        <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)] w-0 transition-all duration-[1500ms]" data-width="85%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Strategy -->
+                    <div class="reveal-hidden p-6 bg-white/5 backdrop-blur border border-white/5 rounded-xl overflow-hidden group hover:bg-white/10 transition-colors" style="transition-delay: 0.4s">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-cyan-500/20 rounded-lg text-cyan-400"><i data-lucide="layers"></i></div>
+                            <span class="font-mono text-2xl font-bold text-white/20">75%</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Stratégie E-Business</h3>
+                        <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)] w-0 transition-all duration-[1500ms]" data-width="75%"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERESTS SECTION -->
+        <section class="relative z-20 py-32">
+            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-4 mb-12 text-center reveal-hidden">
+                    <h2 class="text-5xl font-black uppercase">Centres <span class="text-cyan-500">d'Intérêt</span></h2>
+                </div>
+
+                <!-- Card 1 -->
+                <div class="interest-card group relative aspect-[4/5] bg-gray-900 overflow-hidden border border-white/10 reveal-hidden" style="transition-delay: 0s">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-600 to-black opacity-50 group-hover:opacity-80 transition-opacity duration-500">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30"></div>
+                    </div>
+                    <div class="interest-content absolute inset-0 p-8 flex flex-col justify-end translate-y-4 transition-transform duration-500">
+                        <div class="interest-line w-12 h-1 bg-white mb-4 scale-x-0 origin-left transition-transform duration-500"></div>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-2">Vibe-Coding & IA</h3>
+                        <p class="interest-desc text-gray-300 opacity-0 transition-opacity duration-500 delay-100 text-sm">Exploration des LLMs. Création assistée par IA. Futur du dév.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="interest-card group relative aspect-[4/5] bg-gray-900 overflow-hidden border border-white/10 reveal-hidden" style="transition-delay: 0.2s">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-black opacity-50 group-hover:opacity-80 transition-opacity duration-500">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30"></div>
+                    </div>
+                    <div class="interest-content absolute inset-0 p-8 flex flex-col justify-end translate-y-4 transition-transform duration-500">
+                        <div class="interest-line w-12 h-1 bg-white mb-4 scale-x-0 origin-left transition-transform duration-500"></div>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-2">Basket-Ball</h3>
+                        <p class="interest-desc text-gray-300 opacity-0 transition-opacity duration-500 delay-100 text-sm">Compétition Pré-Nationale. Esprit d'équipe, leadership.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="interest-card group relative aspect-[4/5] bg-gray-900 overflow-hidden border border-white/10 reveal-hidden" style="transition-delay: 0.4s">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-600 to-black opacity-50 group-hover:opacity-80 transition-opacity duration-500">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30"></div>
+                    </div>
+                    <div class="interest-content absolute inset-0 p-8 flex flex-col justify-end translate-y-4 transition-transform duration-500">
+                        <div class="interest-line w-12 h-1 bg-white mb-4 scale-x-0 origin-left transition-transform duration-500"></div>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-2">Photographie</h3>
+                        <p class="interest-desc text-gray-300 opacity-0 transition-opacity duration-500 delay-100 text-sm">Accréditation JSA Bordeaux. Capturer l'instant décisif.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="interest-card group relative aspect-[4/5] bg-gray-900 overflow-hidden border border-white/10 reveal-hidden" style="transition-delay: 0.6s">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-black opacity-50 group-hover:opacity-80 transition-opacity duration-500">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30"></div>
+                    </div>
+                    <div class="interest-content absolute inset-0 p-8 flex flex-col justify-end translate-y-4 transition-transform duration-500">
+                        <div class="interest-line w-12 h-1 bg-white mb-4 scale-x-0 origin-left transition-transform duration-500"></div>
+                        <h3 class="text-2xl font-bold text-white uppercase mb-2">Design Graphique</h3>
+                        <p class="interest-desc text-gray-300 opacity-0 transition-opacity duration-500 delay-100 text-sm">Logos, chartes, UI. L'esthétique au service du sens.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-32 relative z-10 min-h-screen flex items-center">
+            <div class="container mx-auto px-6">
+                <div class="bg-black/60 backdrop-blur-xl border border-white/10 p-8 md:p-16 rounded-3xl overflow-hidden relative reveal-hidden">
+                    
+                    <!-- Grid Background -->
+                    <div class="absolute inset-0 grid grid-cols-[repeat(20,1fr)] opacity-10 pointer-events-none">
+                         <div class="border border-cyan-500/20 h-full w-full"></div>
+                         <div style="position:absolute; inset:0; background-image: linear-gradient(to right, #06b6d4 1px, transparent 1px), linear-gradient(to bottom, #06b6d4 1px, transparent 1px); background-size: 50px 50px; opacity: 0.1;"></div>
+                    </div>
+
+                    <div class="relative z-10 grid md:grid-cols-2 gap-16">
+                        <div>
+                            <h2 class="text-5xl md:text-7xl font-black text-white mb-8">
+                                INITIALISER<br/>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">CONTACT</span>
+                            </h2>
+                            
+                            <!-- CHANGED: Generic Text for Portfolio/CV -->
+                            <p class="text-xl text-gray-400 mb-12">
+                                Étudiant en Marketing Digital & E-Business.
+                                <br/>Passionné par la stratégie numérique et la création.
+                                <br/>Zone: Bordeaux & Alentours.
+                            </p>
+
+                            <div class="space-y-6">
+                                <a href="mailto:enzo.pitre33@gmail.com" class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-colors group">
+                                    <div class="p-4 bg-white/5 rounded-full group-hover:bg-cyan-500/20 transition-colors">
+                                        <i data-lucide="mail"></i>
+                                    </div>
+                                    <span class="text-lg">enzo.pitre33@gmail.com</span>
+                                </a>
+                                <div class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-colors group">
+                                    <div class="p-4 bg-white/5 rounded-full group-hover:bg-cyan-500/20 transition-colors">
+                                        <i data-lucide="phone"></i>
+                                    </div>
+                                    <span class="text-lg">06.37.33.94.20</span>
+                                </div>
+                                <div class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-colors group">
+                                    <div class="p-4 bg-white/5 rounded-full group-hover:bg-cyan-500/20 transition-colors">
+                                        <i data-lucide="map-pin"></i>
+                                    </div>
+                                    <span class="text-lg">Bordeaux, France</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form class="space-y-6 mt-8 md:mt-0">
+                            <div class="group">
+                                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-cyan-400 transition-colors">Identifiant (Nom)</label>
+                                <input type="text" class="w-full bg-white/5 border-b border-gray-700 text-white p-4 focus:outline-none focus:border-cyan-500 transition-all" placeholder="Entrez votre nom" />
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-cyan-400 transition-colors">Fréquence (Email)</label>
+                                <input type="email" class="w-full bg-white/5 border-b border-gray-700 text-white p-4 focus:outline-none focus:border-cyan-500 transition-all" placeholder="nom@entreprise.com" />
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-cyan-400 transition-colors">Transmission (Message)</label>
+                                <textarea rows="4" class="w-full bg-white/5 border-b border-gray-700 text-white p-4 focus:outline-none focus:border-cyan-500 transition-all resize-none" placeholder="Votre message..."></textarea>
+                            </div>
+                            
+                            <button type="button" class="magnetic-btn w-full py-6 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold uppercase tracking-widest hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transition-shadow block">
+                                Envoyer la donnée
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="py-8 text-center text-gray-600 text-xs font-mono uppercase tracking-widest border-t border-white/5 relative z-20">
+            © 2025 Enzo Pitre. Tous droits réservés. <br/>
+            Architecture & Design : Native Canvas & Vanilla JS.
+        </footer>
+    
+    </main>
+
+    <!-- AUDIO VISUALIZER -->
+    <div class="fixed bottom-8 left-8 z-50 flex items-end gap-1 h-8">
+        <div class="visualizer-bar w-1 bg-cyan-500/80 h-2"></div>
+        <div class="visualizer-bar w-1 bg-cyan-500/80 h-6"></div>
+        <div class="visualizer-bar w-1 bg-cyan-500/80 h-3"></div>
+        <div class="visualizer-bar w-1 bg-cyan-500/80 h-5"></div>
+        <div class="visualizer-bar w-1 bg-cyan-500/80 h-2"></div>
+        <span class="ml-2 text-xs font-mono text-cyan-500/80 tracking-widest self-center">AUDIO_SYNC_OFF</span>
+    </div>
+
+    <script>
+        // --- INITIALISATION DES ICÔNES ---
+        lucide.createIcons();
+
+        // --- LOADER SYSTEM ---
+        window.addEventListener('load', () => {
+            const loaderProgress = document.getElementById('loader-progress');
+            const loaderText = document.getElementById('loader-text');
+            const loader = document.getElementById('loader');
+            const mainContent = document.getElementById('main-content');
+            
+            // Glitch effect on loader text
+            const originalText = "INITIALISATION SYSTEME ENZO...";
+            glitchTextEffect(loaderText, originalText, 20);
+
+            // Simulate progress
+            setTimeout(() => { loaderProgress.style.width = "100%"; }, 100);
+
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.transform = 'translateY(-50px)';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    mainContent.style.opacity = '1';
+                    initScrollAnimations(); // Start observing elements
+                }, 500);
+            }, 2500);
+        });
+
+        // --- GLITCH TEXT EFFECT ---
+        function glitchTextEffect(element, text, speed = 30) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%&";
+            let iteration = 0;
+            let interval = null;
+
+            clearInterval(interval);
+            
+            interval = setInterval(() => {
+                element.innerText = text
+                    .split("")
+                    .map((letter, index) => {
+                        if (index < iteration) return text[index];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join("");
+
+                if (iteration >= text.length) clearInterval(interval);
+                iteration += 1 / 3;
+            }, speed);
+        }
+
+        // Run glitch on Hero Name
+        setInterval(() => {
+            const title = document.querySelector('.glitch-target');
+            glitchTextEffect(title, title.getAttribute('data-text'), 50);
+        }, 5000); // Repeat every 5s
+
+        // --- MAGNETIC BUTTONS ---
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                // Apply gentle spring transform
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0px, 0px)';
+                btn.style.transition = 'transform 0.5s cubic-bezier(0.17, 0.55, 0.55, 1)';
+                setTimeout(() => { btn.style.transition = ''; }, 500); // Remove transition to prevent lag on next hover
+            });
+        });
+
+        // --- CUSTOM CURSOR ---
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = 0, mouseY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            // Simple follow
+            cursor.style.transform = `translate(${mouseX - 16}px, ${mouseY - 16}px)`;
+        });
+
+        // --- SCROLL ANIMATIONS (Intersection Observer) ---
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Reveal standard elements
+                        if (entry.target.classList.contains('reveal-hidden')) {
+                            entry.target.classList.remove('reveal-hidden');
+                            entry.target.classList.add('reveal-visible');
+                        }
+                        // Reveal left elements
+                        if (entry.target.classList.contains('reveal-left-hidden')) {
+                            entry.target.classList.remove('reveal-left-hidden');
+                            entry.target.classList.add('reveal-side-visible');
+                        }
+                        // Reveal right elements
+                        if (entry.target.classList.contains('reveal-right-hidden')) {
+                            entry.target.classList.remove('reveal-right-hidden');
+                            entry.target.classList.add('reveal-side-visible');
+                        }
+                        
+                        // Animate Skill Bars
+                        const bar = entry.target.querySelector('.skill-bar');
+                        if (bar) {
+                            bar.style.width = bar.getAttribute('data-width');
+                        }
+                        
+                        observer.unobserve(entry.target); // Animate once
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-hidden, .reveal-left-hidden, .reveal-right-hidden').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // --- PARALLAX EFFECT ---
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroContent = document.getElementById('hero-content');
+            
+            // Parallax on hero text
+            if(scrollY < 500) {
+                heroContent.style.transform = `translateY(${scrollY * 0.4}px)`;
+                heroContent.style.opacity = 1 - (scrollY / 300);
+            }
+        });
+
+        // --- SMOOTH SCROLL ---
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- AUDIO VISUALIZER ANIMATION ---
+        const bars = document.querySelectorAll('.visualizer-bar');
+        bars.forEach((bar, i) => {
+            // Random animation purely via JS to randomize heights
+            setInterval(() => {
+                const h = Math.floor(Math.random() * 20) + 5;
+                bar.style.height = `${h}px`;
+                bar.style.transition = `height ${0.3 + (i * 0.1)}s ease`;
+            }, 200 + (i * 100));
+        });
+
+        // --- SPACE CANVAS BACKGROUND (Native JS Port) ---
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const stars = Array.from({ length: 150 }).map(() => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            z: Math.random() * 2, 
+            size: Math.random() * 1.5,
+            alpha: Math.random()
+        }));
+
+        const particles = Array.from({ length: 50 }).map(() => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2 + 0.5
+        }));
+
+        let mouse = { x: width / 2, y: height / 2 };
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Stars
+            ctx.fillStyle = '#ffffff';
+            stars.forEach(star => {
+                if(Math.random() > 0.99) star.alpha = Math.random();
+                
+                const dx = (mouse.x - width / 2) * 0.02 * star.z;
+                const dy = (mouse.y - height / 2) * 0.02 * star.z;
+                
+                ctx.globalAlpha = star.alpha * 0.6;
+                ctx.beginPath();
+                ctx.arc(star.x + dx, star.y + dy, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+
+            // 2. Particles
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                const dx = p.x - mouse.x;
+                const dy = p.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (150 - dist) / 150;
+                    p.x += Math.cos(angle) * force * 1;
+                    p.y += Math.sin(angle) * force * 1;
+                }
+
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.5)';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Connections
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx2 = p.x - p2.x;
+                    const dy2 = p.y - p2.y;
+                    const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+                    if (dist2 < 120) {
+                        ctx.strokeStyle = `rgba(6, 182, 212, ${0.15 * (1 - dist2 / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        animateCanvas();
+
+    </script>
+</body>
+</html>
