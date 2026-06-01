@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enzo Pitre &ndash; Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #090909;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --text: #f0ede8;
+    --text-muted: #7a7870;
+    --text-dim: #4a4844;
+    --accent: #c8a96e;
+    --accent2: #e8d5a8;
+    --accent-dim: rgba(200,169,110,0.12);
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: normal;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(200,169,110,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                height 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                border-color 0.3s;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring { width: 56px; height: 56px; border-color: rgba(200,169,110,0.7); }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(9,9,9,0.8);
+    border-color: var(--border);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO 3D CANVAS */
+  #hero-canvas {
+    position: absolute;
+    top: 0; right: 0;
+    width: 55%; height: 100%;
+    z-index: 0;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.8s forwards;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 3rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-lines {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to bottom, transparent 60%, var(--bg) 100%),
+      repeating-linear-gradient(90deg, var(--border) 0, var(--border) 1px, transparent 1px, transparent 12.5%);
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.95;
+    color: var(--text);
+    position: relative; z-index: 1;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    margin-top: 2rem;
+    max-width: 520px;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.65;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.9s 0.55s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex; gap: 1rem; align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.75s forwards;
+    position: relative; z-index: 1;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--accent);
+    color: #0a0908;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--border-hover);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+    cursor: none;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-scroll-hint {
+    position: absolute; bottom: 2rem; right: 3rem;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim);
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; gap: 0.75rem;
+    opacity: 0; animation: fadeUp 1s 1.2s forwards;
+  }
+  .hero-scroll-hint::before {
+    content: ''; display: block;
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--text-dim));
+    animation: scrollLine 2s 1.5s infinite;
+  }
+  @keyframes scrollLine {
+    0%,100%{opacity:0.3;transform:scaleY(1) translateY(0)}
+    50%{opacity:1;transform:scaleY(1.3) translateY(6px)}
+  }
+
+  /* SECTIONS */
+  section { padding: 7rem 3rem; }
+  .section-label {
+    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .divider {
+    width: 100%; height: 1px;
+    background: var(--border);
+    margin: 0 3rem;
+    width: calc(100% - 6rem);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+  .about-text p { color: var(--text-muted); font-weight: 300; margin-bottom: 1.25rem; }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .stat-box {
+    background: var(--bg2);
+    padding: 2rem 1.75rem;
+    transition: background 0.2s;
+  }
+  .stat-box:hover { background: var(--bg3); }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* SKILLS */
+  .skills-section { background: var(--bg2); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 4rem;
+  }
+  .skill-card {
+    background: var(--bg2);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover { background: var(--bg3); }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-icon {
+    font-size: 1.5rem; margin-bottom: 1.25rem;
+    color: var(--accent);
+  }
+  .skill-name {
+    font-weight: 500; font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .skill-desc { font-size: 0.875rem; color: var(--text-muted); font-weight: 300; line-height: 1.6; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.25rem; }
+  .tag {
+    font-size: 0.7rem; letter-spacing: 0.06em;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border-hover);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* SKILL PROOF LINK */
+  .skill-proof {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1.25rem;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,169,110,0.25);
+    padding-bottom: 1px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .skill-proof:hover { border-color: var(--accent); }
+  .skill-proof-placeholder {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1.25rem;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* LIVRABLES */
+  .livrables-section { background: var(--bg); }
+  .livrables-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 4rem;
+  }
+  .livrable-card {
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: background 0.2s;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s, background 0.2s;
+  }
+  .livrable-card.visible { opacity: 1; transform: translateY(0); }
+  .livrable-card:hover { background: var(--bg3); }
+  .livrable-thumb {
+    aspect-ratio: 16/9;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .livrable-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .livrable-card:hover .livrable-thumb img { transform: scale(1.03); }
+  .livrable-thumb-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.75rem; color: var(--text-muted); font-size: 0.8rem; text-align: center;
+    padding: 1.5rem;
+    background: var(--bg3);
+  }
+  .livrable-thumb-placeholder span {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .livrable-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+  .livrable-cat {
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .livrable-name { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.4rem; }
+  .livrable-desc { font-size: 0.8rem; color: var(--text-muted); font-weight: 300; line-height: 1.55; flex: 1; }
+  .livrable-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1rem;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid rgba(200,169,110,0.25); padding-bottom: 1px;
+    align-self: flex-start;
+    transition: border-color 0.2s;
+  }
+  .livrable-link:hover { border-color: var(--accent); }
+  .livrable-add {
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5rem;
+    padding: 3rem 2rem; text-align: center;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s, background 0.2s;
+    min-height: 200px;
+  }
+  .livrable-add.visible { opacity: 1; transform: translateY(0); }
+  .livrable-add p { font-size: 0.78rem; color: var(--text-dim); font-style: italic; }
+
+  /* EXPERIENCES */
+  .timeline { margin-top: 4rem; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 200px 1px 1fr;
+    gap: 0 2.5rem;
+    padding-bottom: 3.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-date {
+    text-align: right;
+    padding-top: 0.1rem;
+  }
+  .timeline-date-main { font-size: 0.8rem; color: var(--accent); font-weight: 500; }
+  .timeline-date-loc { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem; }
+  .timeline-line {
+    position: relative;
+    background: var(--border);
+  }
+  .timeline-line::before {
+    content: '';
+    position: absolute; top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent-dim);
+  }
+  .timeline-last .timeline-line { background: linear-gradient(to bottom, var(--border), transparent); }
+  .timeline-content { padding-top: 0; }
+  .timeline-title { font-weight: 500; font-size: 1rem; margin-bottom: 0.2rem; }
+  .timeline-company { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .timeline-desc { font-size: 0.875rem; color: var(--text-muted); font-weight: 300; line-height: 1.65; }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-top: 4rem;
+  }
+  .project-card {
+    background: var(--bg);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: background 0.25s;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s, background 0.25s;
+  }
+  .project-card.visible { opacity: 1; transform: translateY(0); }
+  .project-card:hover { background: var(--bg3); }
+  .project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.75rem; }
+  .project-number { font-family: var(--font-display); font-size: 3.5rem; color: var(--text-dim); line-height: 1; }
+  .project-arrow {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border-hover);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim);
+    font-size: 1rem;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .project-card:hover .project-arrow { border-color: var(--accent); color: var(--accent); transform: translate(3px,-3px); }
+  .project-name { font-weight: 500; font-size: 1.25rem; margin-bottom: 0.6rem; }
+  .project-desc { font-size: 0.875rem; color: var(--text-muted); font-weight: 300; line-height: 1.65; margin-bottom: 1.5rem; }
+  .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .project-full { grid-column: 1 / -1; }
+
+  /* VISION */
+  .vision-section {
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+  }
+  .vision-section::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,169,110,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .vision-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .vision-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.25;
+    color: var(--text);
+  }
+  .vision-quote em { font-style: italic; color: var(--accent); }
+  .vision-items { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+  .vision-item { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .vision-dot {
+    width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    margin-top: 0.65rem; flex-shrink: 0;
+  }
+  .vision-item-title { font-weight: 500; font-size: 0.95rem; }
+  .vision-item-desc { font-size: 0.85rem; color: var(--text-muted); font-weight: 300; margin-top: 0.2rem; }
+  .school-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+  .school-card {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .school-card:hover { border-color: var(--border-hover); background: var(--bg3); }
+  .school-name { font-size: 0.9rem; font-weight: 500; }
+  .school-prog { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+  .school-status {
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid;
+  }
+  .status-pending { color: var(--accent); border-color: rgba(200,169,110,0.35); }
+  .status-active { color: #6eca8f; border-color: rgba(110,202,143,0.35); }
+
+  /* CONTACT */
+  .contact-section { background: var(--bg); }
+  .contact-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: start;
+  }
+  .contact-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.05;
+  }
+  .contact-title em { font-style: italic; color: var(--accent); }
+  .contact-links { display: flex; flex-direction: column; gap: 0; margin-top: 1rem; }
+  .contact-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding-left 0.2s;
+  }
+  .contact-link:first-child { border-top: 1px solid var(--border); }
+  .contact-link:hover { padding-left: 0.5rem; }
+  .contact-link-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .contact-link-val { font-size: 0.9rem; font-weight: 400; }
+  .contact-link-arrow { color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
+  .contact-link:hover .contact-link-arrow { color: var(--accent); transform: translateX(4px); }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p { font-size: 0.75rem; color: var(--text-dim); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* PHOTO PLACEHOLDER */
+  .photo-block {
+    aspect-ratio: 3/4; background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.75rem;
+    color: var(--text-dim); font-size: 0.8rem;
+    text-align: center;
+  }
+  .photo-block svg { opacity: 0.3; }
+
+  /* LANG BAR */
+  .lang-bar { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+  .lang-row { display: flex; align-items: center; gap: 1rem; }
+  .lang-name { font-size: 0.8rem; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .lang-track { flex: 1; height: 1px; background: var(--border); position: relative; }
+  .lang-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--accent); transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+  .lang-score { font-size: 0.75rem; color: var(--text-dim); width: 60px; text-align: right; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .hero { padding: 0 1.5rem 4rem; }
+    .about-grid, .vision-inner, .contact-inner, .projects-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .divider { margin: 0 1.5rem; width: calc(100% - 3rem); }
+    .timeline-item { grid-template-columns: 1fr; gap: 0.5rem 0; }
+    .timeline-line { display: none; }
+    .timeline-date { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">Enzo Pitre</a>
+  <ul class="nav-links">
+    <li><a href="#about">Parcours</a></li>
+    <li><a href="#skills">Comp&eacute;tences</a></li>
+    <li><a href="#livrables">Livrables</a></li>
+    <li><a href="#experience">Exp&eacute;riences</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg-lines" aria-hidden="true"></div>
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <p class="hero-eyebrow">Portfolio &ndash; BUT Techniques de Commercialisation</p>
+  <h1 class="hero-title">
+    Enzo<br>
+    <em>Pitre.</em>
+  </h1>
+  <p class="hero-sub">
+    Marketing digital &middot; Entrepreneuriat SaaS &middot; International.<br>
+    Programme Grande &Eacute;cole dans le viseur pour construire une carri&egrave;re dans le digital marketing &agrave; l&rsquo;international.
+  </p>
+  <div class="hero-cta">
+    <a href="#contact" class="btn-primary">Prendre contact &rarr;</a>
+    <a href="#projects" class="btn-ghost">Voir mes projets</a>
+  </div>
+  <span class="hero-scroll-hint" aria-hidden="true">Scroll</span>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">00 &ndash; Bilan</p>
+  <h2 class="section-title reveal">Qui je suis,<br><em>d&rsquo;o&ugrave; je viens.</em></h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>Actuellement en 3&egrave;me ann&eacute;e de <strong>BUT TC parcours MDEE</strong> &agrave; l&rsquo;IUT Bordeaux-Bastide, en alternance chez <strong>Printeknologies</strong> &agrave; M&eacute;rignac. J&rsquo;ai construit en parall&egrave;le plusieurs produits SaaS &agrave; partir de z&eacute;ro, seul.</p>
+      <p>Avant le BUT, j&rsquo;avais un profil engag&eacute;&nbsp;: basketteur en comp&eacute;tition au niveau pr&eacute;-national, pompier volontaire JSP pendant 5 ans, b&eacute;n&eacute;vole aux Restos du Coeur et en EHPAD, titulaire du BAFA. Des ann&eacute;es d&rsquo;actions collectives qui ont construit mon rapport &agrave; la responsabilit&eacute; et au terrain.</p>
+
+      <div style="margin:2rem 0;padding:1.5rem;border-left:2px solid var(--accent);background:rgba(200,169,110,0.04)">
+        <p style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem">Bilan BUT TC &ndash; 3 ans</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">Ces trois ann&eacute;es m&rsquo;ont enti&egrave;rement professionnalis&eacute;. Les stages successifs, et surtout l&rsquo;alternance en 3&egrave;me ann&eacute;e, m&rsquo;ont donn&eacute; des comp&eacute;tences op&eacute;rationnelles r&eacute;elles&nbsp;: outils digitaux, pilotage de campagnes, gestion de projets en autonomie.</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">La formation pluridisciplinaire de Tech de Co m&rsquo;a ouvert les yeux sur des outils et des pratiques dont je n&rsquo;avais pas conscience, et que j&rsquo;utilise aujourd&rsquo;hui au quotidien, aussi bien en entreprise que dans mes projets personnels.</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7">L&rsquo;ouverture internationale &ndash; Erasmus en Allemagne, stage en Cr&egrave;te &ndash; a orient&eacute; d&eacute;finitivement mes objectifs professionnels vers l&rsquo;international. Je sors du BUT en sachant ce que je veux faire, et avec les outils pour y arriver.</p>
+      </div>
+
+      <p>Mon objectif&nbsp;: int&eacute;grer un <strong>Programme Grande &Eacute;cole</strong> &agrave; la rentr&eacute;e 2026 (KEDGE, NEOMA ou ESSCA) pour viser des postes &agrave; <strong>l&rsquo;international</strong>, id&eacute;alement aux &Eacute;tats-Unis.</p>
+
+      <div class="lang-bar" style="margin-top:2rem">
+        <p style="font-size:0.75rem;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem">Langues</p>
+        <div class="lang-row">
+          <span class="lang-name">Fran&ccedil;ais</span>
+          <div class="lang-track"><div class="lang-fill" data-w="100"></div></div>
+          <span class="lang-score">Natif</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Anglais</span>
+          <div class="lang-track"><div class="lang-fill" data-w="82"></div></div>
+          <span class="lang-score">TOEIC 860</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Espagnol</span>
+          <div class="lang-track"><div class="lang-fill" data-w="35"></div></div>
+          <span class="lang-score">Notions</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="about-stats reveal">
+        <div class="stat-box">
+          <p class="stat-num">3</p>
+          <p class="stat-label">SaaS lanc&eacute;s en autonomie</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num">860</p>
+          <p class="stat-label">TOEIC &ndash; Anglais</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num">5</p>
+          <p class="stat-label">Ans JSP &ndash; SDIS 33</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num">6+</p>
+          <p class="stat-label">Exp&eacute;riences pro &amp; int&rsquo;l</p>
+        </div>
+      </div>
+      <img src="https://file.garden/acorJcx0ggLd80GU/enzo.jpeg" alt="Enzo Pitre" class="reveal" style="margin-top:1px;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;display:block;border:1px solid var(--border)">
+    </div>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- SKILLS -->
+<section id="skills" class="skills-section">
+  <p class="section-label reveal">01 &ndash; Comp&eacute;tences</p>
+  <h2 class="section-title reveal">Ce que je <em>sais faire.</em></h2>
+  <div class="skills-grid">
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">Marketing digital B2B</p>
+      <p class="skill-desc">Strat&eacute;gie de contenu, email marketing, acquisition, SEO. Pilotage autonome de la pr&eacute;sence digitale de Printeknologies depuis septembre&nbsp;2025.</p>
+      <div class="skill-tags">
+        <span class="tag">Brevo</span>
+        <span class="tag">LinkedIn</span>
+        <span class="tag">Shopify</span>
+        <span class="tag">Google Ads</span>
+        <span class="tag">SEO</span>
+      </div>
+      <span class="skill-proof-placeholder">&#9650; Voir livrables ci-dessous</span>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">Entrepreneuriat SaaS</p>
+      <p class="skill-desc">Conception, d&eacute;veloppement et lancement de produits SaaS en autonomie compl&egrave;te, du code au go-to-market, au paiement et au SEO.</p>
+      <div class="skill-tags">
+        <span class="tag">Next.js</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Stripe</span>
+        <span class="tag">Vercel</span>
+        <span class="tag">Claude API</span>
+      </div>
+      <a href="https://www.roast-my-site.fr/" target="_blank" rel="noopener" class="skill-proof">Voir Roast My Site en ligne &nearr;</a>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">Cr&eacute;ation de contenu</p>
+      <p class="skill-desc">Newsletters HTML, campagnes email, fiches produits, visuels print, contenus r&eacute;seaux sociaux. Ma&icirc;trise des outils graphiques et des codes visuels du marketing premium.</p>
+      <div class="skill-tags">
+        <span class="tag">Canva Pro</span>
+        <span class="tag">Adobe Suite</span>
+        <span class="tag">Figma</span>
+        <span class="tag">HTML Email</span>
+      </div>
+      <span class="skill-proof-placeholder">&#9650; Voir livrables ci-dessous</span>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">Analyse &amp; strat&eacute;gie</p>
+      <p class="skill-desc">Benchmarks concurrentiels, audits digitaux (site, LinkedIn, emailing), segmentation Brevo, reporting r&eacute;gulier. Capacit&eacute; &agrave; transformer la data en d&eacute;cision.</p>
+      <div class="skill-tags">
+        <span class="tag">GA4</span>
+        <span class="tag">Benchmark</span>
+        <span class="tag">Excel</span>
+        <span class="tag">Data-driven</span>
+      </div>
+      <span class="skill-proof-placeholder">&#9650; Voir livrables ci-dessous</span>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">Management de projet</p>
+      <p class="skill-desc">Gestion de projets complexes en autonomie (SaaS, campagnes, m&eacute;moire BUT), coordination avec des prestataires externes (agence web, imprimeurs), respect des deadlines.</p>
+      <div class="skill-tags">
+        <span class="tag">Notion</span>
+        <span class="tag">Autonomie</span>
+        <span class="tag">Delivery</span>
+      </div>
+      <span class="skill-proof-placeholder">&#9650; Voir livrables ci-dessous</span>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-icon">&#9670;</div>
+      <p class="skill-name">International &amp; adaptabilit&eacute;</p>
+      <p class="skill-desc">Erasmus en Allemagne, stage en Cr&egrave;te, TOEIC&nbsp;860. Exp&eacute;rience prouve de l&rsquo;adaptation culturelle rapide dans des environnements professionnels exigeants.</p>
+      <div class="skill-tags">
+        <span class="tag">Anglais B2</span>
+        <span class="tag">Erasmus DE</span>
+        <span class="tag">Stage Cr&egrave;te</span>
+        <span class="tag">Mobilit&eacute;</span>
+      </div>
+      <a href="https://www.linkedin.com/in/enzo-pitre-162a15292/" target="_blank" rel="noopener" class="skill-proof">Voir LinkedIn &nearr;</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- LIVRABLES -->
+<section id="livrables" class="livrables-section">
+  <p class="section-label reveal">02 &ndash; Livrables &amp; preuves</p>
+  <h2 class="section-title reveal">Des comp&eacute;tences <em>prouv&eacute;es.</em></h2>
+  <p class="reveal" style="margin-top:1rem;color:var(--text-muted);font-weight:300;font-size:0.95rem;max-width:560px">Chaque comp&eacute;tence ci-dessus s&rsquo;appuie sur des livrables r&eacute;els, r&eacute;alis&eacute;s en alternance, en stage ou en autonomie.</p>
+
+  <div class="livrables-grid">
+
+    <!-- 1 : Campagnes Brevo -->
+    <div class="livrable-card reveal">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+          <span>Campagnes email B2B</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">Email Marketing &middot; B2B</p>
+        <p class="livrable-name">Campagnes Brevo &ndash; Printeknologies</p>
+        <p class="livrable-desc">Conception et envoi de campagnes email B2B ciblant les secteurs viticulture, industrie et distribution&nbsp;: Epson ColorWorks C8000E, OKI Pro, Zebra, Spring Days. Segmentation, HTML responsive, suivi des taux d&rsquo;ouverture.</p>
+        <a href="archives_pdf_enzo.html" class="livrable-link">Voir les archives &nearr;</a>
+      </div>
+    </div>
+
+    <!-- 2 : LinkedIn Printeknologies -->
+    <div class="livrable-card reveal" style="transition-delay:0.07s">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          <span>Strat&eacute;gie r&eacute;seaux sociaux</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">R&eacute;seaux sociaux &middot; B2B</p>
+        <p class="livrable-name">Strat&eacute;gie LinkedIn &ndash; Printeknologies</p>
+        <p class="livrable-desc">Gestion autonome de la page LinkedIn de Printeknologies&nbsp;: &eacute;ditoriale mensuelle, r&eacute;daction et publication des posts, animation de la communaut&eacute; professionnelle, suivi des KPIs d&rsquo;engagement.</p>
+        <a href="https://www.linkedin.com/company/printeknologies/" target="_blank" rel="noopener" class="livrable-link">Voir la page LinkedIn &nearr;</a>
+      </div>
+    </div>
+
+    <!-- 3 : Roast My Site -->
+    <div class="livrable-card reveal" style="transition-delay:0.14s">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <img src="https://file.garden/acorJcx0ggLd80GU/roastmysite%20fav%20icon.png" alt="Roast My Site" style="width:40px;height:40px;object-fit:contain;border-radius:8px">
+          <span>Application SaaS live</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">SaaS &middot; Entrepreneuriat</p>
+        <p class="livrable-name">Roast My Site</p>
+        <p class="livrable-desc">Application SaaS d&rsquo;audit IA de sites web, con&ccedil;ue, d&eacute;velopp&eacute;e et lanc&eacute;e en autonomie compl&egrave;te. Paywall Stripe &agrave;&nbsp;4,90&nbsp;&euro;, infrastructure SEO, strat&eacute;gie de contenu TikTok/LinkedIn. D&eacute;ploy&eacute; en production.</p>
+        <a href="https://www.roast-my-site.fr/" target="_blank" rel="noopener" class="livrable-link">Voir le site en ligne &nearr;</a>
+      </div>
+    </div>
+
+    <!-- 4 : Audit digital -->
+    <div class="livrable-card reveal" style="transition-delay:0.21s">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Pr&eacute;sent dans les archives</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">Audit &middot; Strat&eacute;gie digitale</p>
+        <p class="livrable-name">Audit digital Printeknologies</p>
+        <p class="livrable-desc">Audit complet de la pr&eacute;sence digitale&nbsp;: site web, LinkedIn, emailing. Benchmark concurrentiel, recommandations strat&eacute;giques, plan d&rsquo;action pr&eacute;sent&eacute; &agrave; la direction. Livr&eacute; en DOCX structur&eacute;.</p>
+        <a href="archives_pdf_enzo.html" class="livrable-link">Voir dans les archives &nearr;</a>
+      </div>
+    </div>
+
+    <!-- 5 : Flyers & supports print -->
+    <div class="livrable-card reveal" style="transition-delay:0.28s">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>Pr&eacute;sent dans les archives</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">Print &middot; Cr&eacute;ation graphique</p>
+        <p class="livrable-name">Flyers &amp; supports print</p>
+        <p class="livrable-desc">Conception de supports print pour Printeknologies&nbsp;: flyers produits, fiches techniques, chemise porte-document, fiche ruban thermique. Mise en page Canva Pro, export pour impression professionnelle.</p>
+        <a href="archives_pdf_enzo.html" class="livrable-link">Voir dans les archives &nearr;</a>
+      </div>
+    </div>
+
+    <!-- 6 : Zenvoi -->
+    <div class="livrable-card reveal" style="transition-delay:0.35s">
+      <div class="livrable-thumb">
+        <div class="livrable-thumb-placeholder">
+          <img src="https://file.garden/acorJcx0ggLd80GU/zenvoi%20fav%20icon.png" alt="Zenvoi" style="width:40px;height:40px;object-fit:contain;border-radius:8px">
+          <span>Application SaaS live</span>
+        </div>
+      </div>
+      <div class="livrable-body">
+        <p class="livrable-cat">SaaS &middot; Entrepreneuriat</p>
+        <p class="livrable-name">Zenvoi &ndash; Portail client</p>
+        <p class="livrable-desc">Portail client white-label pour freelances et agences fran&ccedil;aises. Build Next.js&nbsp;15, Supabase, DNS OVH. Liste d&rsquo;attente active. Con&ccedil;u, d&eacute;velopp&eacute; et d&eacute;ploy&eacute; seul.</p>
+        <a href="https://www.zenvoi.fr/" target="_blank" rel="noopener" class="livrable-link">Voir le site en ligne &nearr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="reveal" style="margin-top:2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+    <a href="archives_pdf_enzo.html" class="btn-primary" style="font-size:0.8rem;padding:0.65rem 1.5rem">Voir toutes les archives &rarr;</a>
+    <p style="font-size:0.78rem;color:var(--text-dim)">M&eacute;moire BUT, benchmark, calendrier &eacute;ditorial, campagnes OKI Pro&nbsp;/ Zebra&hellip;</p>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- EXPERIENCES -->
+<section id="experience">
+  <p class="section-label reveal">03 &ndash; Exp&eacute;riences</p>
+  <h2 class="section-title reveal">Ce que j&rsquo;ai <em>construit.</em></h2>
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <div class="timeline-date">
+        <p class="timeline-date-main">Sept. 2025 &ndash; Ao&ucirc;t 2026</p>
+        <p class="timeline-date-loc">M&eacute;rignac, Bordeaux</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Alternant Marketing Digital</p>
+        <p class="timeline-company">Printeknologies</p>
+        <p class="timeline-desc">Pilotage autonome de toute la pr&eacute;sence digitale d&rsquo;une PME B2B&nbsp;: strat&eacute;gie LinkedIn, campagnes Brevo (Epson ColorWorks, OKI Pro, Zebra), optimisation Shopify, Google Ads, magazine mensuel PrintMAG, audits SEO, flyers, fiches produits, benchmarks concurrentiels. Interlocuteur unique pour le digital.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal" style="transition-delay:0.1s">
+      <div class="timeline-date">
+        <p class="timeline-date-main">Jan. &ndash; Mars 2025</p>
+        <p class="timeline-date-loc">M&eacute;rignac</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Stage Marketing &ndash; D&eacute;veloppement SEO</p>
+        <p class="timeline-company">Cr&eacute;ative Acad&eacute;mie</p>
+        <p class="timeline-desc">D&eacute;veloppement et mise en oeuvre de la strat&eacute;gie web marketing, optimisation SEO, cr&eacute;ation de contenus optimis&eacute;s.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal" style="transition-delay:0.2s">
+      <div class="timeline-date">
+        <p class="timeline-date-main">Juin &ndash; Juil. 2024</p>
+        <p class="timeline-date-loc">Cr&egrave;te, Gr&egrave;ce</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Stage International &ndash; Encadrant Quad</p>
+        <p class="timeline-company">Creta Quad Safari</p>
+        <p class="timeline-desc">Accueil et encadrement de groupes internationaux de touristes, communication multilingue, gestion de l&rsquo;exp&eacute;rience client sur le terrain. Premi&egrave;re immersion professionnelle en anglais &agrave; l&rsquo;&eacute;tranger.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal" style="transition-delay:0.3s">
+      <div class="timeline-date">
+        <p class="timeline-date-main">Mai 2024</p>
+        <p class="timeline-date-loc">Bordeaux</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Stage &ndash; Foire Internationale de Bordeaux</p>
+        <p class="timeline-company">Ligue NA Volley-Ball</p>
+        <p class="timeline-desc">Animation du stand, contact client, accueil grand public. Exp&eacute;rience terrain en &eacute;v&eacute;nementiel.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal" style="transition-delay:0.4s">
+      <div class="timeline-date">
+        <p class="timeline-date-main">Jan. 2024</p>
+        <p class="timeline-date-loc">Gradignan</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Stage D&eacute;couverte &ndash; Marketing</p>
+        <p class="timeline-company">Cottage</p>
+        <p class="timeline-desc">Cr&eacute;ation de contenu r&eacute;seaux sociaux, recherche de partenariats, veille concurrentielle, cr&eacute;ation de supports print.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal timeline-last" style="transition-delay:0.5s">
+      <div class="timeline-date">
+        <p class="timeline-date-main">2017 &ndash; 2022</p>
+        <p class="timeline-date-loc">Andernos-les-Bains</p>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-content">
+        <p class="timeline-title">Jeune Sapeur-Pompier</p>
+        <p class="timeline-company">SDIS 33</p>
+        <p class="timeline-desc">5 ans d&rsquo;engagement b&eacute;n&eacute;vole au sein du corps des JSP. Formation aux gestes de premiers secours, discipline collective, esprit d&rsquo;&eacute;quipe. En parall&egrave;le&nbsp;: b&eacute;n&eacute;volat aux Restos du Coeur et en EHPAD.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">04 &ndash; Projets SaaS</p>
+  <h2 class="section-title reveal">Ce que j&rsquo;ai <em>lanc&eacute;.</em></h2>
+  <div class="projects-grid">
+
+    <a href="https://www.roast-my-site.fr/" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-number">01</span>
+        <div class="project-arrow">&nearr;</div>
+      </div>
+      <p class="project-name">Roast My Site</p>
+      <p class="project-desc">Audit IA de site web en quelques secondes. L&rsquo;utilisateur entre une URL, Claude analyse et retourne un rapport structur&eacute; avec scores et recommandations actionables. Paywall &agrave; 4,90&nbsp;&euro;, infrastructure SEO compl&egrave;te, strat&eacute;gie de contenu TikTok/LinkedIn.</p>
+      <div class="project-stack">
+        <span class="tag">Next.js 14</span>
+        <span class="tag">Claude API</span>
+        <span class="tag">Stripe</span>
+        <span class="tag">Supabase</span>
+      </div>
+    </a>
+
+    <a href="https://www.zenvoi.fr/" target="_blank" rel="noopener" class="project-card reveal" style="transition-delay:0.1s">
+      <div class="project-card-top">
+        <span class="project-number">02</span>
+        <div class="project-arrow">&nearr;</div>
+      </div>
+      <p class="project-name">Zenvoi</p>
+      <p class="project-desc">Portail client white-label pour freelances et agences fran&ccedil;aises. Gestion des projets, devis, factures et communication client dans une interface premium. D&eacute;ploy&eacute; sur Vercel avec liste d&rsquo;attente Supabase.</p>
+      <div class="project-stack">
+        <span class="tag">Next.js 15</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Vercel</span>
+        <span class="tag">OVH DNS</span>
+      </div>
+    </a>
+
+    <div class="project-card project-full reveal" style="transition-delay:0.15s; cursor:default;">
+      <div class="project-card-top">
+        <span class="project-number">03</span>
+        <div class="project-arrow" style="opacity:0.3">&#9670;</div>
+      </div>
+      <p class="project-name">CueAI <span style="font-size:0.75rem;color:var(--accent);border:1px solid rgba(200,169,110,0.3);padding:0.15rem 0.5rem;vertical-align:middle;letter-spacing:0.06em;text-transform:uppercase">En d&eacute;veloppement</span></p>
+      <p class="project-desc" style="max-width:640px">Application SaaS pour DJs&nbsp;: analyse audio par IA pour g&eacute;n&eacute;rer automatiquement des hot cue points dans Rekordbox. Interface dark premium inspir&eacute;e de Native Instruments Traktor. Build compil&eacute;, d&eacute;ploiement Vercel en cours.</p>
+      <div class="project-stack">
+        <span class="tag">Next.js 15</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Stripe</span>
+        <span class="tag">Claude API</span>
+        <span class="tag">Rekordbox XML</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- VISION -->
+<section id="vision" class="vision-section">
+  <p class="section-label reveal">05 &ndash; Projet professionnel</p>
+  <h2 class="section-title reveal">O&ugrave; je <em>vais.</em></h2>
+  <div class="vision-inner" style="margin-top:4rem">
+    <div>
+      <p class="vision-quote reveal">
+        &laquo;&nbsp;Piloter des projets de marketing digital &agrave; l&rsquo;international.
+        <em>Id&eacute;alement aux &Eacute;tats-Unis.</em>&nbsp;&raquo;
+      </p>
+      <div class="vision-items reveal">
+        <div class="vision-item">
+          <div class="vision-dot"></div>
+          <div>
+            <p class="vision-item-title">Objectif court terme &ndash; Programme Grande &Eacute;cole</p>
+            <p class="vision-item-desc">Int&eacute;grer un PGE (KEDGE, NEOMA ou ESSCA) &agrave; la rentr&eacute;e 2026. C&rsquo;est la voie principale vis&eacute;e pour approfondir le marketing international, le management et le business development dans un contexte multiculturel.</p>
+          </div>
+        </div>
+        <div class="vision-item">
+          <div class="vision-dot"></div>
+          <div>
+            <p class="vision-item-title">Cible moyen terme &ndash; International</p>
+            <p class="vision-item-desc">Exp&eacute;rience professionnelle en agence ou chez un annonceur avec dimension internationale forte. March&eacute; am&eacute;ricain en priorit&eacute;.</p>
+          </div>
+        </div>
+        <div class="vision-item">
+          <div class="vision-dot"></div>
+          <div>
+            <p class="vision-item-title">Vision long terme &ndash; Entrepreneuriat</p>
+            <p class="vision-item-desc">Construire ou cofonder un produit digital &agrave; impact international, en capitalisant sur les comp&eacute;tences SaaS acquises en ind&eacute;pendant.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.25rem">Candidatures en cours</p>
+      <div class="school-cards">
+        <div class="school-card">
+          <div>
+            <p class="school-name">KEDGE Business School</p>
+            <p class="school-prog">Programme Grande &Eacute;cole</p>
+          </div>
+          <span class="school-status status-pending">En attente</span>
+        </div>
+        <div class="school-card">
+          <div>
+            <p class="school-name">NEOMA Business School</p>
+            <p class="school-prog">Programme Grande &Eacute;cole</p>
+          </div>
+          <span class="school-status status-pending">En attente</span>
+        </div>
+        <div class="school-card">
+          <div>
+            <p class="school-name">ESSCA Bordeaux</p>
+            <p class="school-prog">Programme Grande &Eacute;cole</p>
+          </div>
+          <span class="school-status status-pending">En attente</span>
+        </div>
+
+        <div class="school-card">
+          <div>
+            <p class="school-name">IAE Bordeaux</p>
+            <p class="school-prog">M1 Marketing Strat&eacute;gique &amp; Communication</p>
+          </div>
+          <span class="school-status status-active">Process&nbsp;ouvert</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <p class="section-label reveal">06 &ndash; Contact</p>
+  <div class="contact-inner">
+    <div>
+      <h2 class="contact-title reveal">
+        Travaillons<br>
+        <em>ensemble.</em>
+      </h2>
+      <p class="reveal" style="margin-top:1.5rem;color:var(--text-muted);font-weight:300;max-width:380px;font-size:0.95rem">
+        Recruteur, jury d&rsquo;admissions ou simple curiosit&eacute;&nbsp;: n&rsquo;h&eacute;site pas &agrave; me contacter.
+      </p>
+    </div>
+    <div class="reveal">
+      <div class="contact-links">
+        <a href="mailto:enzo.pitre33@gmail.com" class="contact-link">
+          <div>
+            <p class="contact-link-label">Email</p>
+            <p class="contact-link-val">enzo.pitre33@gmail.com</p>
+          </div>
+          <span class="contact-link-arrow">&rarr;</span>
+        </a>
+        <a href="tel:0637339420" class="contact-link">
+          <div>
+            <p class="contact-link-label">T&eacute;l&eacute;phone</p>
+            <p class="contact-link-val">06 37 33 94 20</p>
+          </div>
+          <span class="contact-link-arrow">&rarr;</span>
+        </a>
+        <a href="https://www.linkedin.com/in/enzo-pitre-162a15292/" target="_blank" rel="noopener" class="contact-link">
+          <div>
+            <p class="contact-link-label">LinkedIn</p>
+            <p class="contact-link-val">enzo-pitre-162a15292</p>
+          </div>
+          <span class="contact-link-arrow">&rarr;</span>
+        </a>
+        <a href="https://linktr.ee/enzo.pitre" target="_blank" rel="noopener" class="contact-link">
+          <div>
+            <p class="contact-link-label">Linktree</p>
+            <p class="contact-link-val">linktr.ee/enzo.pitre</p>
+          </div>
+          <span class="contact-link-arrow">&rarr;</span>
+        </a>
+        <a href="https://www.zenvoi.fr/" target="_blank" rel="noopener" class="contact-link">
+          <div>
+            <p class="contact-link-label">Projet SaaS</p>
+            <p class="contact-link-val">zenvoi.fr</p>
+          </div>
+          <span class="contact-link-arrow">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy;&nbsp;2026 Enzo Pitre &ndash; Portfolio BUT TC S6</p>
+  <p>IUT Bordeaux-Bastide &middot; Parcours MDEE</p>
+</footer>
+
+<script>
+/* CURSOR */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+/* NAV SCROLL */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* SCROLL REVEAL */
+const reveals = document.querySelectorAll('.reveal, .timeline-item, .project-card');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }});
+}, { threshold: 0.12 });
+reveals.forEach(el => io.observe(el));
+
+/* LANG BARS */
+const langObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.lang-fill').forEach(fill => {
+        fill.style.width = fill.dataset.w + '%';
+      });
+      langObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const langSection = document.querySelector('.lang-bar');
+if(langSection) {
+  document.querySelectorAll('.lang-fill').forEach(f => f.style.width = '0%');
+  langObserver.observe(langSection.closest('section'));
+}
+</script>
+
+<!-- HERO CANVAS MINIMALISTE -->
+<script>
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+    canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const W = () => canvas.offsetWidth;
+  const H = () => canvas.offsetHeight;
+
+  /* 3 cercles concentriques fins qui respirent */
+  let t = 0;
+  let mx = 0.5, my = 0.5;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX / window.innerWidth;
+    my = e.clientY / window.innerHeight;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, W(), H());
+    t += 0.008;
+
+    const cx = W() * 0.5 + (mx - 0.5) * 18;
+    const cy = H() * 0.5 + (my - 0.5) * 12;
+
+    const radii = [
+      W() * 0.22 + Math.sin(t * 0.7) * 6,
+      W() * 0.30 + Math.sin(t * 0.5 + 1) * 9,
+      W() * 0.40 + Math.sin(t * 0.3 + 2) * 12,
+    ];
+    const opacities = [0.55, 0.22, 0.1];
+
+    radii.forEach((r, i) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(200, 169, 110, ${opacities[i]})`;
+      ctx.lineWidth = i === 0 ? 0.8 : 0.5;
+      ctx.stroke();
+    });
+
+    /* croix centrale très fine */
+    const size = 8;
+    ctx.strokeStyle = 'rgba(200, 169, 110, 0.4)';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(cx - size, cy); ctx.lineTo(cx + size, cy);
+    ctx.moveTo(cx, cy - size); ctx.lineTo(cx, cy + size);
+    ctx.stroke();
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</script>
+</body>
+</html>
