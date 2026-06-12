@@ -38,6 +38,72 @@
     cursor: none;
   }
 
+  /* ANIMATIONS ENRICHIES */
+  @keyframes floatY {
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-8px); }
+  }
+  @keyframes shimmer {
+    0%{ background-position: -200% center; }
+    100%{ background-position: 200% center; }
+  }
+  .accent-shimmer {
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+  /* Hover lift sur les cards */
+  .skill-card { transition: background 0.25s, transform 0.25s; }
+  .skill-card:hover { transform: translateY(-3px); }
+  .livrable-card { transition: background 0.2s, transform 0.25s; }
+  .livrable-card:hover { transform: translateY(-3px); }
+  /* Stat box pulse au hover */
+  .stat-box { transition: background 0.2s, transform 0.2s; }
+  .stat-box:hover { transform: scale(1.03); }
+  /* Timeline dot pulse */
+  .timeline-line::before { transition: box-shadow 0.3s; }
+  .timeline-item.visible .timeline-line::before {
+    animation: dotPulse 2s 0.5s ease-out;
+  }
+  @keyframes dotPulse {
+    0%{ box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent-dim); }
+    50%{ box-shadow: 0 0 0 3px var(--bg), 0 0 0 10px rgba(200,169,110,0); }
+    100%{ box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent-dim); }
+  }
+
+  /* UNSPLASH IMAGE BANDS */
+  .img-band {
+    width: 100%; overflow: hidden;
+    position: relative;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .img-band img {
+    width: 100%; height: 280px;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.28) saturate(0.6);
+    transform: scale(1.03);
+    transition: transform 6s ease, filter 0.5s;
+  }
+  .img-band:hover img { filter: brightness(0.38) saturate(0.7); transform: scale(1); }
+  .img-band-label {
+    position: absolute; bottom: 2rem; left: 3rem;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(200,169,110,0.7);
+  }
+
+  /* REVEAL stagger pour skills grid */
+  .skills-grid .skill-card:nth-child(1){ transition-delay: 0s; }
+  .skills-grid .skill-card:nth-child(2){ transition-delay: 0.08s; }
+  .skills-grid .skill-card:nth-child(3){ transition-delay: 0.16s; }
+  .skills-grid .skill-card:nth-child(4){ transition-delay: 0.24s; }
+  .skills-grid .skill-card:nth-child(5){ transition-delay: 0.32s; }
+  .skills-grid .skill-card:nth-child(6){ transition-delay: 0.40s; }
+
   /* CUSTOM CURSOR */
   .cursor {
     position: fixed;
@@ -634,11 +700,11 @@
   <p class="hero-eyebrow">Portfolio &ndash; BUT Techniques de Commercialisation</p>
   <h1 class="hero-title">
     Enzo<br>
-    <em>Pitre.</em>
+    <em class="accent-shimmer">Pitre.</em>
   </h1>
   <p class="hero-sub">
     Marketing digital &middot; Entrepreneuriat SaaS &middot; International.<br>
-    Programme Grande &Eacute;cole dans le viseur pour construire une carri&egrave;re dans le digital marketing &agrave; l&rsquo;international.
+    Admis au <strong style="color:var(--accent);font-weight:500">PGE KEDGE Bordeaux</strong> &ndash; prochain objectif&nbsp;: l&rsquo;international.
   </p>
   <div class="hero-cta">
     <a href="#contact" class="btn-primary">Prendre contact &rarr;</a>
@@ -659,13 +725,48 @@
       <p>Avant le BUT, j&rsquo;avais un profil engag&eacute;&nbsp;: basketteur en comp&eacute;tition au niveau pr&eacute;-national, pompier volontaire JSP pendant 5 ans, b&eacute;n&eacute;vole aux Restos du Coeur et en EHPAD, titulaire du BAFA. Des ann&eacute;es d&rsquo;actions collectives qui ont construit mon rapport &agrave; la responsabilit&eacute; et au terrain.</p>
 
       <div style="margin:2rem 0;padding:1.5rem;border-left:2px solid var(--accent);background:rgba(200,169,110,0.04)">
-        <p style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem">Bilan BUT TC &ndash; 3 ans</p>
-        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">Ces trois ann&eacute;es m&rsquo;ont enti&egrave;rement professionnalis&eacute;. Les stages successifs, et surtout l&rsquo;alternance en 3&egrave;me ann&eacute;e, m&rsquo;ont donn&eacute; des comp&eacute;tences op&eacute;rationnelles r&eacute;elles&nbsp;: outils digitaux, pilotage de campagnes, gestion de projets en autonomie.</p>
-        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">La formation pluridisciplinaire de Tech de Co m&rsquo;a ouvert les yeux sur des outils et des pratiques dont je n&rsquo;avais pas conscience, et que j&rsquo;utilise aujourd&rsquo;hui au quotidien, aussi bien en entreprise que dans mes projets personnels.</p>
-        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7">L&rsquo;ouverture internationale &ndash; Erasmus en Allemagne, stage en Cr&egrave;te &ndash; a orient&eacute; d&eacute;finitivement mes objectifs professionnels vers l&rsquo;international. Je sors du BUT en sachant ce que je veux faire, et avec les outils pour y arriver.</p>
+        <p style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem">Bilan BUT TC &ndash; 2 derni&egrave;res ann&eacute;es</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">Ces deux ann&eacute;es m&rsquo;ont enti&egrave;rement professionnalis&eacute;. Les stages successifs, et surtout l&rsquo;alternance en 3&egrave;me ann&eacute;e, m&rsquo;ont donn&eacute; des comp&eacute;tences op&eacute;rationnelles r&eacute;elles&nbsp;: outils digitaux, pilotage de campagnes, gestion de projets en autonomie.</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7;margin-bottom:0.75rem">La formation pluridisciplinaire de Tech de Co m&rsquo;a ouvert les yeux sur des outils et des pratiques que j&rsquo;utilise aujourd&rsquo;hui au quotidien, aussi bien en entreprise que dans mes projets personnels.</p>
+        <p style="color:var(--text-muted);font-weight:300;font-size:0.9rem;line-height:1.7">L&rsquo;ouverture internationale &ndash; Erasmus en Allemagne, stage en Cr&egrave;te &ndash; a orient&eacute; d&eacute;finitivement mes objectifs vers l&rsquo;international. Je sors du BUT en sachant ce que je veux faire, et avec les outils pour y arriver.</p>
       </div>
 
-      <p>Mon objectif&nbsp;: int&eacute;grer un <strong>Programme Grande &Eacute;cole</strong> &agrave; la rentr&eacute;e 2026 (KEDGE, NEOMA ou ESSCA) pour viser des postes &agrave; <strong>l&rsquo;international</strong>, id&eacute;alement aux &Eacute;tats-Unis.</p>
+      <!-- POINTS D'APPUI -->
+      <div style="margin:2rem 0 1.5rem">
+        <p style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem">Points d&rsquo;appui</p>
+        <div style="display:flex;flex-direction:column;gap:0.85rem">
+          <div style="display:flex;align-items:flex-start;gap:1rem">
+            <span style="color:var(--accent);font-size:0.55rem;margin-top:0.55rem;flex-shrink:0">&#9670;</span>
+            <div>
+              <p style="font-size:0.88rem;font-weight:500;margin-bottom:0.2rem">Percevoir le fruit de ses efforts</p>
+              <p style="font-size:0.8rem;color:var(--text-muted);font-weight:300;line-height:1.55">Lancer des projets SaaS de A &agrave; Z, voir des utilisateurs s&rsquo;inscrire, obtenir des r&eacute;sultats concrets en alternance&nbsp;: ce retour tangible est ce qui me pousse &agrave; aller plus loin.</p>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:1rem">
+            <span style="color:var(--accent);font-size:0.55rem;margin-top:0.55rem;flex-shrink:0">&#9670;</span>
+            <div>
+              <p style="font-size:0.88rem;font-weight:500;margin-bottom:0.2rem">S&rsquo;engager dans des mouvements associatifs</p>
+              <p style="font-size:0.8rem;color:var(--text-muted);font-weight:300;line-height:1.55">5 ans de JSP, b&eacute;n&eacute;volat aux Restos du Coeur, animation en EHPAD, BAFA. L&rsquo;engagement collectif a toujours fait partie de qui je suis.</p>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:1rem">
+            <span style="color:var(--accent);font-size:0.55rem;margin-top:0.55rem;flex-shrink:0">&#9670;</span>
+            <div>
+              <p style="font-size:0.88rem;font-weight:500;margin-bottom:0.2rem">Aimer rendre service</p>
+              <p style="font-size:0.8rem;color:var(--text-muted);font-weight:300;line-height:1.55">Du terrain associatif aux outils SaaS&nbsp;: je construis des choses utiles. Le marketing digital que je pratique est avant tout un service rendu &agrave; l&rsquo;entreprise et &agrave; ses clients.</p>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:1rem">
+            <span style="color:var(--accent);font-size:0.55rem;margin-top:0.55rem;flex-shrink:0">&#9670;</span>
+            <div>
+              <p style="font-size:0.88rem;font-weight:500;margin-bottom:0.2rem">Rester loyal en toute situation</p>
+              <p style="font-size:0.8rem;color:var(--text-muted);font-weight:300;line-height:1.55">Que ce soit vis-&agrave;-vis de mes employeurs, de mes &eacute;quipes ou de mes engagements&nbsp;: la loyaut&eacute; est une valeur non n&eacute;gociable dans ma fa&ccedil;on de travailler.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>Mon prochain chapitre&nbsp;: le <strong>PGE de KEDGE Bordeaux</strong> en formation initiale d&egrave;s la rentr&eacute;e 2026, avec l&rsquo;objectif de maximiser les exp&eacute;riences internationales et de viser des postes &agrave; l&rsquo;&eacute;tranger, id&eacute;alement aux <strong>&Eacute;tats-Unis</strong>.</p>
 
       <div class="lang-bar" style="margin-top:2rem">
         <p style="font-size:0.75rem;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem">Langues</p>
@@ -802,6 +903,11 @@
 
 <div class="divider" aria-hidden="true"></div>
 
+<div class="img-band reveal">
+  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=75" alt="Digital marketing workspace" loading="lazy">
+  <span class="img-band-label">Marketing digital &middot; Printeknologies 2025&ndash;2026</span>
+</div>
+
 <!-- LIVRABLES -->
 <section id="livrables" class="livrables-section">
   <p class="section-label reveal">02 &ndash; Livrables &amp; preuves</p>
@@ -916,6 +1022,11 @@
 
 <div class="divider" aria-hidden="true"></div>
 
+<div class="img-band reveal">
+  <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=75" alt="Team collaboration" loading="lazy">
+  <span class="img-band-label">Exp&eacute;riences &middot; Terrain &amp; autonomie</span>
+</div>
+
 <!-- EXPERIENCES -->
 <section id="experience">
   <p class="section-label reveal">03 &ndash; Exp&eacute;riences</p>
@@ -1005,6 +1116,11 @@
 
 <div class="divider" aria-hidden="true"></div>
 
+<div class="img-band reveal">
+  <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=75" alt="Code SaaS" loading="lazy">
+  <span class="img-band-label">Projets SaaS &middot; Next.js &middot; Claude API &middot; Stripe</span>
+</div>
+
 <!-- PROJECTS -->
 <section id="projects">
   <p class="section-label reveal">04 &ndash; Projets SaaS</p>
@@ -1066,6 +1182,18 @@
 <section id="vision" class="vision-section">
   <p class="section-label reveal">05 &ndash; Projet professionnel</p>
   <h2 class="section-title reveal">O&ugrave; je <em>vais.</em></h2>
+
+  <!-- IMAGE BANNER VISION -->
+  <div class="reveal" style="margin-top:3rem;position:relative;overflow:hidden;height:260px;border:1px solid var(--border)">
+    <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1400&q=80" alt="New York City" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.35)">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:3rem">
+      <div>
+        <p style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem">Destination</p>
+        <p style="font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.1;color:var(--text)">L&rsquo;international.<br><em style="color:var(--accent)">Id&eacute;alement les &Eacute;tats-Unis.</em></p>
+      </div>
+    </div>
+  </div>
+
   <div class="vision-inner" style="margin-top:4rem">
     <div>
       <p class="vision-quote reveal">
@@ -1076,58 +1204,40 @@
         <div class="vision-item">
           <div class="vision-dot"></div>
           <div>
-            <p class="vision-item-title">Objectif court terme &ndash; Programme Grande &Eacute;cole</p>
-            <p class="vision-item-desc">Int&eacute;grer un PGE (KEDGE, NEOMA ou ESSCA) &agrave; la rentr&eacute;e 2026. C&rsquo;est la voie principale vis&eacute;e pour approfondir le marketing international, le management et le business development dans un contexte multiculturel.</p>
+            <p class="vision-item-title">Court terme &ndash; KEDGE Business School</p>
+            <p class="vision-item-desc">Admission confirm&eacute;e au <strong style="color:var(--text)">Programme Grande &Eacute;cole de KEDGE Bordeaux</strong> en formation initiale &agrave; la rentr&eacute;e 2026. Objectif&nbsp;: maximiser les exp&eacute;riences internationales, semestres &agrave; l&rsquo;&eacute;tranger, doubles dipl&ocirc;mes.</p>
           </div>
         </div>
         <div class="vision-item">
           <div class="vision-dot"></div>
           <div>
-            <p class="vision-item-title">Cible moyen terme &ndash; International</p>
-            <p class="vision-item-desc">Exp&eacute;rience professionnelle en agence ou chez un annonceur avec dimension internationale forte. March&eacute; am&eacute;ricain en priorit&eacute;.</p>
+            <p class="vision-item-title">Moyen terme &ndash; Poste international</p>
+            <p class="vision-item-desc">Exp&eacute;rience professionnelle en agence ou chez un annonceur avec une dimension internationale forte. March&eacute; am&eacute;ricain en priorit&eacute;.</p>
           </div>
         </div>
         <div class="vision-item">
           <div class="vision-dot"></div>
           <div>
-            <p class="vision-item-title">Vision long terme &ndash; Entrepreneuriat</p>
+            <p class="vision-item-title">Long terme &ndash; Entrepreneuriat</p>
             <p class="vision-item-desc">Construire ou cofonder un produit digital &agrave; impact international, en capitalisant sur les comp&eacute;tences SaaS acquises en ind&eacute;pendant.</p>
           </div>
         </div>
       </div>
     </div>
     <div class="reveal">
-      <p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.25rem">Candidatures en cours</p>
+      <p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.25rem">Admission confirm&eacute;e</p>
       <div class="school-cards">
-        <div class="school-card">
+        <div class="school-card" style="border-color:rgba(200,169,110,0.4)">
           <div>
             <p class="school-name">KEDGE Business School</p>
-            <p class="school-prog">Programme Grande &Eacute;cole</p>
+            <p class="school-prog">Programme Grande &Eacute;cole &middot; Bordeaux &middot; Formation initiale</p>
           </div>
-          <span class="school-status status-pending">En attente</span>
+          <span class="school-status status-active">Confirm&eacute; &#10003;</span>
         </div>
-        <div class="school-card">
-          <div>
-            <p class="school-name">NEOMA Business School</p>
-            <p class="school-prog">Programme Grande &Eacute;cole</p>
-          </div>
-          <span class="school-status status-pending">En attente</span>
-        </div>
-        <div class="school-card">
-          <div>
-            <p class="school-name">ESSCA Bordeaux</p>
-            <p class="school-prog">Programme Grande &Eacute;cole</p>
-          </div>
-          <span class="school-status status-pending">En attente</span>
-        </div>
-
-        <div class="school-card">
-          <div>
-            <p class="school-name">IAE Bordeaux</p>
-            <p class="school-prog">M1 Marketing Strat&eacute;gique &amp; Communication</p>
-          </div>
-          <span class="school-status status-active">Process&nbsp;ouvert</span>
-        </div>
+      </div>
+      <!-- Image KEDGE / campus -->
+      <div style="margin-top:1px;overflow:hidden;border:1px solid var(--border);border-top:none">
+        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=75" alt="Campus grande école" style="width:100%;height:180px;object-fit:cover;object-position:center;filter:brightness(0.5);display:block;transition:filter 0.4s" onmouseover="this.style.filter='brightness(0.65)'" onmouseout="this.style.filter='brightness(0.5)'">
       </div>
     </div>
   </div>
